@@ -45,30 +45,13 @@ if __name__ == "__main__":
 
     alts = np.arange(19.5, 61.5, 1)
 
-    ozone_02to15 = np.load('/home/kimberlee/Masters/npyvars/temperature_02to15_trop_filtered.npy')
-    ozone_03to08 = np.load('/home/kimberlee/Masters/npyvars/temperature_03to08_trop_filtered.npy')
-    ozone_09to15 = np.load('/home/kimberlee/Masters/npyvars/temperature_09to15_trop_filtered.npy')
+    ozone_02to15 = np.load('/home/kimberlee/Masters/npyvars/02to15_filtered.npy')
+    ozone_03to08 = np.load('/home/kimberlee/Masters/npyvars/03to08_filtered.npy')
+    ozone_09to15 = np.load('/home/kimberlee/Masters/npyvars/09to15_filtered.npy')
 
-    mg_02to15 = SolarData.loadmg2(2002, 1, 1, 2015, 12, 31)
-    mganomaly = (mg_02to15 - np.nanmean(mg_02to15)) / np.nanmean(mg_02to15)
-    ymg = pd.Series(mganomaly)
-    fmg = ymg.rolling(center=True, window=6).mean()
-    f2mg = fmg.rolling(center=True, window=35).mean()
-    xmg_02to15 = fmg - f2mg
-
-    mg_03to08 = SolarData.loadmg2(2003, 1, 1, 2008, 12, 31)
-    mganomaly = (mg_03to08 - np.nanmean(mg_03to08)) / np.nanmean(mg_03to08)
-    ymg = pd.Series(mganomaly)
-    fmg = ymg.rolling(center=True, window=6).mean()
-    f2mg = fmg.rolling(center=True, window=35).mean()
-    xmg_03to08 = fmg - f2mg
-
-    mg_09to15 = SolarData.loadmg2(2009, 1, 1, 2015, 12, 31)
-    mganomaly = (mg_09to15 - np.nanmean(mg_09to15)) / np.nanmean(mg_09to15)
-    ymg = pd.Series(mganomaly)
-    fmg = ymg.rolling(center=True, window=6).mean()
-    f2mg = fmg.rolling(center=True, window=35).mean()
-    xmg_09to15 = fmg - f2mg
+    temp_02to15 = np.load('/home/kimberlee/Masters/npyvars/temperature_02to15_trop_filtered.npy')
+    temp_03to08 = np.load('/home/kimberlee/Masters/npyvars/temperature_03to08_trop_filtered.npy')
+    temp_09to15 = np.load('/home/kimberlee/Masters/npyvars/temperature_09to15_trop_filtered.npy')
 
     C_02to15 = np.zeros(len(alts))
     C_03to08 = np.zeros(len(alts))
@@ -79,11 +62,11 @@ if __name__ == "__main__":
     sig_09to15 = np.zeros(len(alts))
 
     for i in range(0, len(alts)):
-        df_02to15 = pd.DataFrame(data={'ozone': ozone_02to15[i, :], 'mgII': xmg_02to15})
+        df_02to15 = pd.DataFrame(data={'ozone': ozone_02to15[i, :], 'mgII': temp_02to15[i, :]})
         df_02to15 = df_02to15.dropna()
-        df_03to08 = pd.DataFrame(data={'ozone': ozone_03to08[i, :], 'mgII': xmg_03to08})
+        df_03to08 = pd.DataFrame(data={'ozone': ozone_03to08[i, :], 'mgII': temp_03to08[i, :]})
         df_03to08 = df_03to08.dropna()
-        df_09to15 = pd.DataFrame(data={'ozone': ozone_09to15[i, :], 'mgII': xmg_09to15})
+        df_09to15 = pd.DataFrame(data={'ozone': ozone_09to15[i, :], 'mgII': temp_09to15[i, :]})
         df_09to15 = df_09to15.dropna()
 
         C_02to15[i], sig_02to15[i] = simpleregression(df_02to15['mgII'].values.reshape(len(df_02to15['mgII']), 1),
@@ -125,13 +108,13 @@ if __name__ == "__main__":
     plt.plot(C_09to15, alts, label="2009-2015")
 
     plt.ylabel("Altitude [km]")
-    plt.xlabel("Sensitivity [% / % change in 205 nm flux]")
+    plt.xlabel("Sensitivity [% / % change in temperature]")
     ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=3, mode="expand", borderaxespad=0.)
     plt.ylim([20, 60])
     # plt.xlim([-0.1, 0.25])
-    plt.xlim([-0.02, 0.04])
+    # plt.xlim([-0.5, 0.5])
 
-    plt.savefig('/home/kimberlee/Masters/Thesis/Figures/sensitivity_temp.png', format='png', dpi=150)
+    plt.savefig('/home/kimberlee/Masters/Thesis/Figures/sensitivity_o3_to_temp.png', format='png', dpi=150)
     # plt.savefig("/home/kimberlee/Masters/Images/EGU_Poster/sensitivity.png", format='png', dpi=200)
     plt.show()
 

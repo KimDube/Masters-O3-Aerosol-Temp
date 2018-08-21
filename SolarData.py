@@ -154,9 +154,9 @@ def proxyfft(index, filt35=1):
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
     sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-    colours = ['blue', 'grass green']
+    colours = ['tangerine', 'blue', 'grass green']
     sns.set_palette(sns.xkcd_palette(colours))
-
+    '''
     f, ax = plt.subplots(figsize=(8, 3))
     mg = loadmg2(2002, 1, 1, 2015, 12, 31)
     start = datetime.date(2002, 1, 1)
@@ -168,6 +168,8 @@ if __name__ == "__main__":
 
     plt.plot(dates, mg, linewidth=1)
     plt.ylabel("Mg II Index")
+    plt.xlabel("Year")
+    plt.xlim([dates[0], dates[-1]])
     #plt.title("GOMESCIA Mg II Index")
     plt.tight_layout()
     plt.savefig("/home/kimberlee/Masters/Thesis/Figures/mgIIindex.png", format='png', dpi=150)
@@ -186,6 +188,7 @@ if __name__ == "__main__":
     yf, freqs = proxyfft(mg)
     plt.plot(1/freqs, 1000*yf, linewidth=2, label="2009-2015")
     plt.xlim([10, 35])
+    plt.ylim([0, 0.9])
     plt.xlabel("Period [Days]")
     plt.ylabel("Signal Power * 1000")
     ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
@@ -193,7 +196,7 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig("/home/kimberlee/Masters/Thesis/Figures/fft_mg.png", format='png', dpi=300)
     plt.show()
-
+    """
     # Three subplots
     fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=False)
     ax1.plot(mg, 'b', linewidth=2)
@@ -208,4 +211,4 @@ if __name__ == "__main__":
     plt.setp([a.get_xticklabels() for a in fig.axes[:-1]], visible=False)
 
     plt.show()
-    '''
+    """

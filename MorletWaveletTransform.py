@@ -144,8 +144,36 @@ def significancetest(signal, period, timestep=1, significance_level=0.95):
 # ======================================================================================================================
 if __name__ == "__main__":
     n = 10000
-    s, tr = samplefunction(n)
 
+    import seaborn as sns
+    # Image for thesis: sine and Morlet in both time and frequency spaces
+    sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
+    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 8))
+
+    ax1.plot(signal.morlet(1000, 5, 1))
+    ax1.set_title("Morlet Wavelet in Time Domain")
+    ax1.set_xlabel("Time")
+
+    ax2.plot(np.fft.fftfreq(1000, 1), abs(np.fft.fft(signal.morlet(1000, 5, 1)).real)**2)
+    ax2.set_xlim([0, 0.02])
+    ax2.set_title("Morlet Wavelet in Frequency Domain")
+    ax2.set_xlabel("Frequency")
+
+    ax3.plot(np.linspace(0, 10, num=1000), np.sin(2 * np.pi * np.linspace(0, 10, num=1000)))
+    ax3.set_title("Sinusoid in Time Domain")
+    ax3.set_xlabel("Time")
+
+    ax4.plot(np.fft.fftfreq(len(np.linspace(0, 10, num=1000))), abs(np.fft.fft(np.sin(2 * np.pi * np.linspace(0, 10, num=1000))))**2)
+    ax4.set_xlim([0, 0.3])
+    ax4.set_title("Sinusoid in Frequency Domain")
+    ax4.set_xlabel("Frequency")
+
+    f.subplots_adjust(hspace=0.5, wspace=0.5)
+
+    plt.show()
+    exit()
+
+    s, tr = samplefunction(n)
     c, per, cone, signif = morletcwt(s, 24, 0.01)
 
     power = abs(c) ** 2

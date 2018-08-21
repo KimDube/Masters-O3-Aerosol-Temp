@@ -1,6 +1,6 @@
 import numpy as np
-from Code_TimeSeriesAnalysis import SolarData
-from Code_TimeSeriesAnalysis import CrossCorrelation as cc
+import SolarData
+import CrossCorrelation as cc
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -92,7 +92,7 @@ print(alts[np.argmax(corrs_03to08)])
 print(alts[np.argmax(corrs_09to15)])
 
 sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-colours = ['red', 'blue', 'grass green']
+colours = ['tangerine', 'blue', 'grass green']
 sns.set_palette(sns.xkcd_palette(colours))
 
 fig, ax = plt.subplots(sharey=True, figsize=(7, 8))
@@ -100,7 +100,7 @@ fig, ax = plt.subplots(sharey=True, figsize=(7, 8))
 plt.plot([0, 0], [20, 60], 'k')
 
 ax.plot(minr_02to15, alts, maxr_02to15, alts, color='black', linewidth=0.5)
-ax.fill_betweenx(alts, minr_02to15, maxr_02to15, facecolor='red', alpha=0.2)
+ax.fill_betweenx(alts, minr_02to15, maxr_02to15, facecolor='xkcd:tangerine', alpha=0.2)
 plt.plot(corrs_02to15, alts, label="2002-2015")
 
 ax.plot(minr_03to08, alts, maxr_03to08, alts, color='black', linewidth=0.5)

@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
-from Code_TimeSeriesAnalysis import SolarData
+import SolarData
 
 
 # -----------------------------------------------------------------------------
@@ -39,6 +39,7 @@ def multipleregression(X, y):
     lm.fit(X, y)
     c = np.array(lm.coef_)
     return c[0], c[1], lm.intercept_
+
 
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -94,9 +95,9 @@ if __name__ == "__main__":
         df_09to15 = pd.DataFrame(data={'ozone': ozone_09to15[i, :], 'temp': temp_09to15[i, :], 'mgII': xmg_09to15})
         df_09to15 = df_09to15.dropna()
 
-        s_02to15[i], t_02to15[i], int_02to15[i] = multipleregression(df_02to15.drop('ozone', axis=1), df_02to15['ozone'])
-        s_03to08[i], t_03to08[i], int_03to08[i] = multipleregression(df_03to08.drop('ozone', axis=1), df_03to08['ozone'])
-        s_09to15[i], t_09to15[i], int_09to15[i] = multipleregression(df_09to15.drop('ozone', axis=1), df_09to15['ozone'])
+        t_02to15[i], s_02to15[i], int_02to15[i] = multipleregression(df_02to15.drop('ozone', axis=1), df_02to15['ozone'])
+        t_03to08[i], s_03to08[i], int_03to08[i] = multipleregression(df_03to08.drop('ozone', axis=1), df_03to08['ozone'])
+        t_09to15[i], s_09to15[i], int_09to15[i] = multipleregression(df_09to15.drop('ozone', axis=1), df_09to15['ozone'])
     # And as stated on page 8 of Dikty 2010: "The ozone sensitivity per unit
     # 205 nm solar irradiance change is obtained by MULTIPLYING s with 0.61"
     s_02to15 *= 0.61
@@ -104,7 +105,7 @@ if __name__ == "__main__":
     s_09to15 *= 0.61
 
     sns.set(context="poster", style="white", rc={'font.family': [u'serif']})
-    colours = ['red', 'pink', 'blue', 'sky blue', 'grass green', 'light green']
+    colours = ['red', 'tangerine', 'blue', 'sky blue', 'grass green', 'light green']
     sns.set_palette(sns.xkcd_palette(colours))
 
     fig, ax = plt.subplots(figsize=(16, 9))

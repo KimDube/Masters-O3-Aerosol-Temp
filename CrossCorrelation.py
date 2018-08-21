@@ -8,7 +8,6 @@ August 2017
 
 import numpy as np
 import matplotlib.pyplot as plt
-from Code_TimeSeriesAnalysis import SolarData
 from scipy.stats.stats import pearsonr
 from scipy import signal
 import pandas as pd
@@ -22,7 +21,7 @@ def confidenceinterval95(r, n):
     :param n: numbers of points (length of series that were correlated)
     :return: rmin & rmax - 95% confidence interval of correlation
     """
-    z = 0.5 * np.log((1 + r) / (1 - r))
+    z = 0.5 * np.log((1 + r) / (1 - r))  # Fischer Transformation, Devore pg.669
     sigma = 1 / np.sqrt(n - 3)
     zmin = z - 1.96 * sigma  # 1.96 is critical value for 95% with normal distribution (from a table)
     zmax = z + 1.96 * sigma

@@ -7,9 +7,9 @@ import matplotlib.dates
 from matplotlib import gridspec
 import seaborn as sns
 import datetime
-from Code_TimeSeriesAnalysis import SolarData as sprox
+import SolarData as sprox
 import pandas as pd
-from Code_TimeSeriesAnalysis import MorletWaveletTransform as mcwt
+import MorletWaveletTransform as mcwt
 
 sy = 2002
 sm = 1
@@ -32,6 +32,12 @@ samplerate = 1  # one value per day
 coef, period, coi, signif = mcwt.morletcwt(mg, omega, samplerate)
 power = abs(coef) ** 2
 
+print(np.shape(power))
+
+# normalize...
+#for i in range(np.shape(power)[1]):
+#    power[:, i] = (power[:, i] - min(power[:, i])) / (max(power[:, i]) - min(power[:, i]))
+
 sig99 = np.ones([1, mg.size]) * signif[:, None]
 sig99 = power / sig99
 # ----------------------------------------------------------------------------------------------------------------------
@@ -46,15 +52,15 @@ for i in range(delta.days + 1):
 
 dates = dates[20:-19]  # lose days from 35 day filter
 
-sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-fig, ax = plt.subplots(figsize=(8, 5))
+sns.set(context="paper", style="white", rc={'font.family': [u'serif']})
+fig, ax = plt.subplots(figsize=(4, 3))
 # gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1])
 # ax = plt.subplot(gs[0])
 X, Y = np.meshgrid(matplotlib.dates.date2num(dates), period)
-im = ax.contourf(X, Y, power, np.arange(0, 200, 2), cmap='hot_r', extend='both')
+im = ax.contourf(X, Y, power, np.arange(0, 200, 1), cmap='hot_r', extend='both')
 
 # Display cone of influence
-ax.plot(dates, coi, '-k')
+ax.plot(dates, coi, '--k')
 
 # 99% confidence level (red noise)
 ax.contour(dates, period, sig99, [-99, 1], colors='k')
@@ -85,6 +91,7 @@ cb = plt.colorbar(im, cax=cbarax)
 cb.set_label("Signal Power", size=24)
 cb.ax.tick_params(labelsize=24)
 """
+plt.xlabel("Year")
 plt.tight_layout()
 plt.savefig("/home/kimberlee/Masters/Thesis/Figures/mg_cwt.png", format='png', dpi=150)
 # plt.savefig("/home/kimberlee/Masters/Images/EGU_Poster/mg_cwt.png", format='png', dpi=200)

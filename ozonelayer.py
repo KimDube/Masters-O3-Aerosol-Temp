@@ -29,15 +29,16 @@ for j in range(99):
     mean_aer[j] = np.nanmean(dens[b])
 
 sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-colours = ['magenta', 'orange']
+colours = ['purple', 'orange']
 sns.set_palette(sns.xkcd_palette(colours))
 fig, ax = plt.subplots(figsize=(7, 8))
 plt.plot(mean_o3/(10**12), all_altitudes, label="Ozone Number Density [10$\mathregular{^{12}}$ molecules/cm$\mathregular{^3}$]")
 plt.plot(mean_aer * 10**4, all_altitudes, label="Aerosol Extinction [10$\mathregular{^{-4}}$/km]")
 
 plt.ylabel('Altitude [km]')
-plt.legend()
-plt.ylim([0, 60])
+ax.legend(bbox_to_anchor=(0.04, -0.2, 1, 0.1), loc=3,
+           ncol=1, mode="expand")
+plt.ylim([10, 60])
 plt.tight_layout()
 
 plt.savefig("/home/kimberlee/Masters/Thesis/Figures/ozoneprofile.png", dpi=150)

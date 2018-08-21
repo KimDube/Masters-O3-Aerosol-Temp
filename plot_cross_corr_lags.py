@@ -1,14 +1,14 @@
-from Code_TimeSeriesAnalysis import CrossCorrelation as cc
-from Code_TimeSeriesAnalysis import SolarData
+import CrossCorrelation as cc
+import SolarData
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 
-ozone_02to15 = np.load('/home/kimberlee/Masters/npyvars/aerosol_02to15_trop_filtered.npy')
-ozone_03to08 = np.load('/home/kimberlee/Masters/npyvars/aerosol_03to08_trop_filtered.npy')
-ozone_09to15 = np.load('/home/kimberlee/Masters/npyvars/aerosol_09to15_trop_filtered.npy')
+ozone_02to15 = np.load('/home/kimberlee/Masters/npyvars/02to15_filtered.npy')
+ozone_03to08 = np.load('/home/kimberlee/Masters/npyvars/03to08_filtered.npy')
+ozone_09to15 = np.load('/home/kimberlee/Masters/npyvars/09to15_filtered.npy')
 
 mg_02to15 = SolarData.loadmg2(2002, 1, 1, 2015, 12, 31)
 mganomaly = (mg_02to15 - np.nanmean(mg_02to15)) / np.nanmean(mg_02to15)
@@ -37,8 +37,11 @@ xmg_09to15 = fmg - f2mg
 v2 = np.isfinite(xmg_09to15)
 xmg_09to15 = xmg_09to15[v2]
 
-alts = [20.5, 22.5, 25.5, 27.5, 30.5, 32.5, 35.5]
-alt_index = [1, 3, 6, 9, 11, 13, 16]
+# alts = [20.5, 22.5, 25.5, 27.5, 30.5, 32.5, 35.5]
+# alt_index = [1, 3, 6, 9, 11, 13, 16]
+
+alts = [25.5, 30.5, 35.5, 40.5, 45.5, 50.5, 55.5]
+alt_index = [6, 11, 16, 21, 26, 31, 36]
 
 corrresult_02to15 = np.zeros((len(alts), 101))
 corrresult_03to08 = np.zeros((len(alts), 101))
@@ -66,7 +69,7 @@ for i in range(len(alts)):
     timelag_09to15[i, :], corrresult_09to15[i, :] = cc.crosscorrelation_scipy(x09to15, xmg_09to15)
 
 sns.set(context="poster", style="white", rc={'font.family': [u'serif']})
-colours = ['red', 'blue', 'grass green']
+colours = ['tangerine', 'blue', 'grass green']
 sns.set_palette(sns.xkcd_palette(colours))
 
 f, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, sharex=True, sharey=True, figsize=(12, 10))
@@ -125,5 +128,5 @@ ax6.plot([0, 0], [-0.6, 0.6], 'k', linewidth=1)
 ax7.plot([0, 0], [-0.6, 0.6], 'k', linewidth=1)
 
 #plt.tight_layout()
-plt.savefig("/home/kimberlee/Masters/Thesis/Figures/corr_lags_aerosol.png", format='png', dpi=150)
+plt.savefig("/home/kimberlee/Masters/Thesis/Figures/corr_lags_o3_mg.png", format='png', dpi=150)
 plt.show()

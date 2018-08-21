@@ -86,7 +86,7 @@ if __name__ == "__main__":
     pow_09to15_30, per_09to15_30 = fastfourier(data_09to15[11:13], 2)
 
     sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-    colours = ['red', 'blue', 'grass green']
+    colours = ['tangerine', 'blue', 'grass green']
     sns.set_palette(sns.xkcd_palette(colours))
 
     f, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, sharex=True, sharey=True, figsize=(8, 7))

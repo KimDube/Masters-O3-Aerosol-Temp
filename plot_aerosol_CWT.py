@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import seaborn as sns
 import datetime
-from Code_TimeSeriesAnalysis import MorletWaveletTransform as mcwt
+import MorletWaveletTransform as mcwt
 
 sy = 2002
 sm = 1
@@ -31,6 +31,15 @@ for i in range(0, len(alts)):
     print(np.shape(coef))
     power = abs(coef) ** 2
 
+    index = (np.abs(period - 40)).argmin()  # cut power spectrum at a period of 40 days
+    period = period[0:index+1]
+    power = power[0:index+1, :]
+    signif = signif[0:index+1]
+
+    # normalize...
+    #for j in range(np.shape(power)[1]):
+    #    power[:, j] = (power[:, j] - min(power[:, j])) / (max(power[:, j]) - min(power[:, j]))
+
     sig95 = np.ones([1, ozone.size]) * signif[:, None]
     sig95 = power / sig95
 # ----------------------------------------------------------------------------------------------------------------------
@@ -43,17 +52,16 @@ for i in range(0, len(alts)):
         dates.append(start + datetime.timedelta(days=j))
 
     dates = dates[20:-19]  # lose days from 35 day filter 20
-    print(len(dates))
 
     sns.set(context="paper", style="white", rc={'font.family': [u'serif']})
     fig, ax = plt.subplots(figsize=(4, 2.5))
     # gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1])
     # ax = plt.subplot(gs[0])
-    im = ax.contourf(dates, period, power, np.arange(0, 2000, 50), extend='both', cmap='hot_r')
+    im = ax.contourf(dates, period, power, np.arange(0, 2000, 10), extend='both', cmap='hot_r')
     # im = ax.contourf(dates, period, power, np.arange(0, 5, 0.1), extend='both', cmap='hot_r')
 
     # Display cone of influence
-    ax.plot(dates, coi, '-k')
+    ax.plot(dates, coi, '--k')
 
     # Display 95% significance level
     ax.contour(dates, period, sig95, [-99, 1], colors='k')
@@ -62,9 +70,6 @@ for i in range(0, len(alts)):
     ax.xaxis_date()
     ax.set_xlim(start, end)
     ax.set_ylim(10, 40)
-    # ax.tick_params(labelsize=24)
-    # Plot line at period of 27 days
-    # plt.plot([start, end], [27, 27], 'k:')
     # plt.title("CWT of OSIRIS O3 at %1.1f km" % alts[i], {'fontsize': 30})
     plt.gca().invert_yaxis()
 
@@ -72,23 +77,7 @@ for i in range(0, len(alts)):
 
     cb = plt.colorbar(im, fraction=0.05, pad=0.02)
     cb.set_label("Signal Power")
-    # cb.ax.tick_params(labelsize=24)
-
-    """
-    ax2 = plt.subplot(gs[1], sharex=ax)
-    ax2.plot(dates, ozone, 'k-')
-    ax2.set_ylim(-10, 10)
-    ax2.tick_params(labelsize=24)
-    plt.ylabel("Anomaly [%]", {'fontsize': 24})
-
-
-    fig.subplots_adjust(right=0.85)
-    cbarax = fig.add_axes([0.86, 0.1, 0.03, 0.8])
-    cb = plt.colorbar(im, cax=cbarax)
-    cb.set_label("Signal Power", size=24)
-    cb.ax.tick_params(labelsize=24)
-    """
 
     plt.tight_layout()
-    plt.savefig("/home/kimberlee/Masters/Plots_CWT/aer_cwt_%i.png" % alts[i], format='png', dpi=150)
+    plt.savefig("/home/kimberlee/Masters/Plots/CWT/aer_cwt_%i.png" % alts[i], format='png', dpi=150)
     # plt.show()

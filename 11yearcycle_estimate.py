@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-from Code_TimeSeriesAnalysis import SolarData
+import SolarData
 from sklearn.linear_model import LinearRegression
 
 
@@ -33,7 +33,6 @@ if __name__ == "__main__":
                                    SolarData.loadmg2(2002, 1, 1, 2002, 3, 31))))
 
     print(abs(mg_max - mg_min))
-
     scvar = (abs(mg_max - mg_min) / np.nanmean([mg_max, mg_min]))*100  # percent variation of Mg II over solar cycle
     print(scvar)
 
@@ -52,28 +51,23 @@ if __name__ == "__main__":
         slopes[i], errs[i] = simpleregression(df_02to15['mgII'].values.reshape(len(df_02to15['mgII']), 1),
                                               df_02to15['ozone'].values.reshape(len(df_02to15['ozone']), 1))
 
-    slopes *= scvar * 0.61  # 0.61 to convert to 205 nm flux.
-    errs *= scvar * 0.61
+    slopes *= (scvar * 0.61)  # 0.61 to convert to 205 nm flux.
+    errs *= (scvar * 0.61)
 
     sns.set(context="talk", style="white", rc={'font.family': [u'serif']})
-    colours = ['red', 'blue', 'grass green']
-    sns.set_palette(sns.xkcd_palette(colours))
-
-    fig, ax = plt.subplots(figsize=(7, 8))
+    fig, ax = plt.subplots(figsize=(8, 5))
     plt.plot([0, 0], [20, 60], 'k')
-    # plt.plot(slopes, alts)
-    # plt.plot(slopes + 2 * errs, alts, 'b--')
-    # plt.plot(slopes - 2 * errs, alts, 'b--')
-
-    ax.plot(slopes, alts)
+    ax.plot(slopes, alts, color='xkcd:red')
     ax.plot(slopes - 2 * errs, alts, slopes + 2 * errs, alts, color='black', linewidth=0.5)
-    ax.fill_betweenx(alts, slopes - 2 * errs, slopes + 2 * errs, facecolor='red', alpha=0.2)
+    ax.fill_betweenx(alts, slopes - 2 * errs, slopes + 2 * errs, facecolor='xkcd:red', alpha=0.2)
 
     plt.ylabel("Altitude [km]")
-    plt.xlabel("% Change in O3 from Solar Min. to Max.")
+    plt.xlabel("% Change in OSIRIS O3 from Solar Min. to Max.")
     # plt.title("Ozone Variation over Solar Cycle")
     plt.ylim([20, 60])
-    plt.savefig("/home/kimberlee/Masters/Thesis/Figures/11yearestimate.png", format='png', dpi=200)
+    plt.xlim([-2.2, 6.5])
+    plt.tight_layout()
+    plt.savefig("/home/kimberlee/Masters/Thesis/Figures/11yearestimate.png", format='png', dpi=150)
     plt.show()
 
     print(min(slopes))

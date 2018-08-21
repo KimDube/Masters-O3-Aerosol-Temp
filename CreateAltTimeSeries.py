@@ -188,8 +188,9 @@ def colourplot(arr, altrange, startdate, enddate):
     # ax.tick_params(labelsize=24)
     # plt.title('Mean OSIRIS Ozone Anomaly')
     plt.ylabel("Altitude [km]")
-    fax = ax.contourf(days, altrange / 1000, 100 * arr, np.arange(-100, 100, 1), cmap="seismic", extend='both')
-    cb = plt.colorbar(fax, orientation='horizontal', fraction=0.2, aspect=50)
+    plt.xlabel("Year")
+    fax = ax.contourf(days, altrange / 1000, 100 * arr, np.arange(-100, 100, 0.05), cmap="seismic", extend='both')
+    cb = plt.colorbar(fax, orientation='horizontal', fraction=0.2, aspect=50, pad=0.2)
     cb.set_label("Anomaly [%]")
     # cb.ax.tick_params(labelsize=24)
     plt.tight_layout()
@@ -199,10 +200,10 @@ def colourplot(arr, altrange, startdate, enddate):
 if __name__ == "__main__":
 
     # Define some variables
-    startyear = 2003
+    startyear = 2002
     startmonth = 1
     startday = 1
-    endyear = 2008
+    endyear = 2015
     endmonth = 12
     endday = 31
     numyears = (endyear - startyear) + 1
@@ -212,7 +213,7 @@ if __name__ == "__main__":
     datelist = pd.date_range(start=start, end=end, freq='D').strftime('%Y/%m/%d')
 
     # path to desired data (files downloaded from SQL server)
-    loc = '/home/kimberlee/Masters/Data_Aerosol/03to08_trop.csv'
+    loc = '/home/kimberlee/Masters/Data_Aerosol/02to15_trop.csv'
     # loc = '/home/kimberlee/Masters/Data_O3/09to15_trop.csv'
     # mjds, altitude, numberdensity, temp = loadozone(loc)
     mjds, altitude, numberdensity, temp = loadaerosol(loc)
@@ -228,15 +229,15 @@ if __name__ == "__main__":
     dailyanoms = anomaly(daily, alts)
     interpvalues = linearinterp(dailyanoms, alts)
     smoothed = smoothing6day(interpvalues, alts)
-    filtered = filtering35day(smoothed, alts)
+    # filtered = filtering35day(smoothed, alts)
 
-    # filtered = np.load('/home/kimberlee/Masters/npyvars/02to15_trop_smoothed.npy')
-    print(np.shape(filtered))
+    # filtered = np.load('/home/kimberlee/Masters/npyvars/aerosol_02to15_trop_smoothed.npy')
+    # print(np.shape(filtered))
     print(len(alts))
-    # colourplot(filtered[:, :], alts, start, end)
-    # plt.savefig("/home/kimberlee/Masters/Thesis/Figures/temperaturesmooth.png", format='png', dpi=150)
+    colourplot(smoothed, alts, start, end)
+    plt.savefig("/home/kimberlee/Masters/Thesis/Figures/aerosolsmooth.png", format='png', dpi=150)
     # plt.savefig("/home/kimberlee/Masters/Images/EGU_Poster/ozonetimeseries.png", format='png', dpi=200)
     # plt.show()
 
-    np.save('/home/kimberlee/Masters/npyvars/aerosol_03to08_trop_filtered', filtered)
+    # np.save('/home/kimberlee/Masters/npyvars/aerosol_03to08_trop_filtered', filtered)
 
